@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Library Management System{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Books</h3>
+                <p class="stat-number">{{ total_books }}</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Members</h3>
+                <p class="stat-number">{{ total_members }}</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-hand-holding"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Borrowed Books</h3>
+                <p class="stat-number">{{ borrowed_books }}</p>
+            </div>
+        </div>
+        
+        <div class="stat-card stat-card-warning">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Overdue Books</h3>
+                <p class="stat-number">{{ overdue_books }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="recent-activity">
+        <h2><i class="fas fa-history"></i> Recent Borrowing Activity</h2>
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Member</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for borrowing in recent_borrowings %}
+                    <tr>
+                        <td>{{ borrowing.book.title }}</td>
+                        <td>{{ borrowing.member.name }}</td>
+                        <td>{{ borrowing.borrow_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ borrowing.due_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {% if borrowing.status == 'borrowed' %}
+                                {% if borrowing.is_overdue %}
+                                <span class="badge badge-danger">Overdue</span>
+                                {% else %}
+                                <span class="badge badge-success">Borrowed</span>
+                                {% endif %}
+                            {% else %}
+                            <span class="badge badge-info">Returned</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center">No recent borrowing activity</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="quick-actions">
+        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="{{ url_for('add_book') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Book
+            </a>
+            <a href="{{ url_for('add_member') }}" class="btn btn-success">
+                <i class="fas fa-user-plus"></i> Add New Member
+            </a>
+            <a href="{{ url_for('issue_book') }}" class="btn btn-info">
+                <i class="fas fa-book-reader"></i> Issue Book
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Borrowing - Library Management System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-hand-holding"></i> Borrowing Records</h1>
+    <a href="{{ url_for('issue_book') }}" class="btn btn-primary">
+        <i class="fas fa-book-reader"></i> Issue New Book
+    </a>
+</div>
+
+<div class="filter-box">
+    <span>Filter:</span>
+    <a href="{{ url_for('borrow_books', status='all') }}" class="btn btn-sm {% if filter_status == 'all' %}btn-primary{% else %}btn-outline{% endif %}">All</a>
+    <a href="{{ url_for('borrow_books', status='borrowed') }}" class="btn btn-sm {% if filter_status == 'borrowed' %}btn-primary{% else %}btn-outline{% endif %}">Borrowed</a>
+    <a href="{{ url_for('borrow_books', status='returned') }}" class="btn btn-sm {% if filter_status == 'returned' %}btn-primary{% else %}btn-outline{% endif %}">Returned</a>
+    <a href="{{ url_for('borrow_books', status='overdue') }}" class="btn btn-sm {% if filter_status == 'overdue' %}btn-primary{% else %}btn-outline{% endif %}">Overdue</a>
+</div>
+
+<div class="table-responsive">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Book</th>
+                <th>Member</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for borrowing in borrowings %}
+            <tr>
+                <td>{{ borrowing.id }}</td>
+                <td>{{ borrowing.book.title }}</td>
+                <td>{{ borrowing.member.name }}</td>
+                <td>{{ borrowing.borrow_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ borrowing.due_date.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    {% if borrowing.return_date %}
+                    {{ borrowing.return_date.strftime('%Y-%m-%d') }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if borrowing.status == 'borrowed' %}
+                        {% if borrowing.is_overdue %}
+                        <span class="badge badge-danger">Overdue</span>
+                        {% else %}
+                        <span class="badge badge-success">Borrowed</span>
+                        {% endif %}
+                    {% else %}
+                    <span class="badge badge-info">Returned</span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    {% if borrowing.status == 'borrowed' %}
+                    <a href="{{ url_for('return_book', id=borrowing.id) }}" class="btn-icon btn-success" title="Return">
+                        <i class="fas fa-undo"></i>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">No borrowing records found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

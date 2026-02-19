@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-book"></i> Library Management
+        </div>
+        <ul class="nav-menu">
+            <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="{{ url_for('books') }}"><i class="fas fa-book"></i> Books</a></li>
+            <li><a href="{{ url_for('members') }}"><i class="fas fa-users"></i> Members</a></li>
+            <li><a href="{{ url_for('borrow_books') }}"><i class="fas fa-hand-holding"></i> Borrowing</a></li>
+            <li><a href="{{ url_for('search') }}"><i class="fas fa-search"></i> Search</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Library Management System. All rights reserved.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

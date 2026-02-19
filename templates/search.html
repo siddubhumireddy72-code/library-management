@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Search - Library Management System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-search"></i> Search</h1>
+</div>
+
+<div class="search-box">
+    <form method="GET" action="{{ url_for('search') }}" class="search-form">
+        <input type="text" name="q" placeholder="Search books or members..." value="{{ query }}">
+        <button type="submit" class="btn btn-secondary">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </form>
+</div>
+
+{% if query %}
+<div class="search-results">
+    <h2>Search Results for "{{ query }}"</h2>
+    
+    <div class="results-section">
+        <h3><i class="fas fa-book"></i> Books ({{ books|length }})</h3>
+        {% if books %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>ISBN</th>
+                        <th>Category</th>
+                        <th>Available</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.isbn }}</td>
+                        <td><span class="badge">{{ book.category }}</span></td>
+                        <td>
+                            {% if book.available_copies > 0 %}
+                            <span class="text-success">{{ book.available_copies }}</span>
+                            {% else %}
+                            <span class="text-danger">{{ book.available_copies }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-results">No books found</p>
+        {% endif %}
+    </div>
+    
+    <div class="results-section">
+        <h3><i class="fas fa-users"></i> Members ({{ members|length }})</h3>
+        {% if members %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.email }}</td>
+                        <td>{{ member.phone }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-results">No members found</p>
+        {% endif %}
+    </div>
+    
+    {% if books|length == 0 and members|length == 0 %}
+    <div class="no-results-message">
+        <i class="fas fa-frown"></i>
+        <p>No results found for "{{ query }}"</p>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
